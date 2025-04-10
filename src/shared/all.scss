@@ -1,0 +1,10 @@
+@import "bootstrap/scss/functions";
+
+@import './variables';
+
+@import "bootstrap/scss/bootstrap";
+
+@import './utilities';
+@import '../pages/login/login';
+@import '../components/header/header';
+@import '../pages/admin/admin';

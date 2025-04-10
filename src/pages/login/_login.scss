@@ -1,0 +1,38 @@
+.login_bg {
+    background-color: #3E9763;
+}
+
+
+
+.login_card {
+    background-color: #2E3137;
+    border-radius: 16px;
+
+}
+
+.tab {
+    margin: 20px 6px 20px 6px;
+    padding: 6px 48px 6px 48px;
+
+    &_active {
+        border-bottom: 1.5px solid $primary;
+        ;
+        color: $primary;
+    }
+
+    &_default {
+        border-bottom: 1.5px solid $gray-500;
+        color: $gray-500;
+    }
+}
+
+.login_input {
+    width: 80%;
+
+
+    .form-control {
+        background-color: #545D6A;
+        padding: 12px 8px 12px 8px;
+        border-radius: 12px;
+    }
+}
