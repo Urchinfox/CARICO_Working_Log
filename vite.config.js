@@ -14,6 +14,6 @@ export default defineConfig({
   //     },
   //   ],
   // },
-  base: process.env.NODE_ENV === 'production' ? '/Carico-workingLog/' : '/',
+  base: process.env.NODE_ENV === 'production' ? '/CARICO_Workout_Log/' : '/',
   plugins: [react()],
 })
