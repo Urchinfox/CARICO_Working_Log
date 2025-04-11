@@ -1,9 +1,9 @@
-import { createBrowserRouter } from 'react-router-dom'
+import { createHashRouter } from 'react-router-dom'
 import Login from '../pages/login/login'
 import CheckIn from '../pages/checkIn/checkin';
 import AdminDashBoard from '../pages/admin/admin';
 
-const routers = createBrowserRouter([
+const routers = createHashRouter([
     {
         path: '/',
         element: <Login />
