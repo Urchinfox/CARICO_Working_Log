@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import supabase from "../supabase";
-import { act } from "react";
+// import { act } from "react";
 
 export const authSlice = createSlice({
     name: 'auth',
