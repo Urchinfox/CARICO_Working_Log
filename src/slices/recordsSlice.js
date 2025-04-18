@@ -12,6 +12,10 @@ export const recordsSlice = createSlice({
         noteInput: "",
         loading: false,
         error: null,
+        individual: [],
+        selectedStaff: "all",
+        selectedStatus: '',
+        editingRecord: null,
     },
     reducers: {
         setSelectedDate(state, action) {
@@ -26,6 +30,20 @@ export const recordsSlice = createSlice({
         setNoteInput(state, action) {
             state.noteInput = action.payload;
         },
+        setFilterStaff(state, action) {
+            state.individual = action.payload;
+            console.log(action.payload)
+        },
+        setSelectedStaff(state, action) {
+            state.selectedStaff = action.payload;
+        },
+        setSelectedStatus(state, action) {
+            state.selectedStatus = action.payload;
+        },
+        setEditingRecord(state, action) {
+            state.editingRecord = action.payload;
+        }
+
     },
     extraReducers: (build) => {
         build
@@ -92,13 +110,28 @@ export const fetchAttendance = createAsyncThunk(
             attendanceRecords = data || [];
         }
 
-        const calculateStatus = (checkIn, checkOut) => {
+        const calculateStatus = (checkIn, checkOut, recordDate) => {
             const checkInTime = checkIn ? new Date(checkIn) : null;
             const checkOutTime = checkOut ? new Date(checkOut) : null;
-            const nineAM = checkInTime ? new Date(checkInTime).setHours(9, 0, 0, 0) : new Date().setHours(9, 0, 0, 0);
+            const nineAM = checkInTime ? new Date(checkInTime).setHours(9, 0, 0, 0) : new Date(recordDate).setHours(9, 0, 0, 0);
+
+            const now = new Date();
+            const today = now.toISOString().split("T")[0];
+            const sixPM = new Date(recordDate);
+            sixPM.setHours(18, 0, 0, 0);
+
+            if (recordDate > today) {
+                return "無";
+            }
 
             let status = [];
-            if (!checkInTime && !checkOutTime) return "曠職";
+            if (!checkInTime && !checkOutTime) {
+                if (recordDate === today && now < sixPM) {
+                    return "無";
+                }
+                return "曠職";
+            }
+
             if (checkInTime && !checkOutTime) status.push("未打卡下班");
             if (checkInTime && checkInTime > nineAM) status.push("遲到");
             if (checkInTime && checkOutTime) {
@@ -127,7 +160,7 @@ export const fetchAttendance = createAsyncThunk(
                     check_out_time: record?.check_out_time
                         ? new Date(record.check_out_time).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
                         : "無",
-                    status: calculateStatus(record?.check_in_time, record?.check_out_time),
+                    status: calculateStatus(record?.check_in_time, record?.check_out_time, selectedDate),
                     date: selectedDate,
                     notes: record?.notes || "無",
                     id: record?.id || null,
@@ -153,7 +186,7 @@ export const fetchAttendance = createAsyncThunk(
                         check_out_time: record?.check_out_time
                             ? new Date(record.check_out_time).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
                             : "無",
-                        status: calculateStatus(record?.check_in_time, record?.check_out_time),
+                        status: calculateStatus(record?.check_in_time, record?.check_out_time, day),
                         date: day,
                         notes: record?.notes || "無",
                         id: record?.id || null,
@@ -165,7 +198,6 @@ export const fetchAttendance = createAsyncThunk(
         return { mode, records: formattedRecords };
     }
 );
-
 
 export const updateNote = createAsyncThunk(
     "record/updateNote",
@@ -201,4 +233,4 @@ export const updateNote = createAsyncThunk(
 
 
 export default recordsSlice.reducer;
-export const { setSelectedDate, setSelectedMonth, setEditingNoteId, setNoteInput } = recordsSlice.actions;
+export const { setSelectedDate, setSelectedMonth, setEditingNoteId, setNoteInput, setFilterStaff, setSelectedStaff, setSelectedStatus, setEditingRecord } = recordsSlice.actions;
