@@ -15,6 +15,7 @@ export const recordsSlice = createSlice({
         individual: [],
         selectedStaff: "all",
         selectedStatus: '',
+        selectedWeekday: [],
         editingRecord: null,
     },
     reducers: {
@@ -39,6 +40,9 @@ export const recordsSlice = createSlice({
         },
         setSelectedStatus(state, action) {
             state.selectedStatus = action.payload;
+        },
+        setSelectedWeekday(state, action) {
+            state.selectedWeekday = action.payload;
         },
         setEditingRecord(state, action) {
             state.editingRecord = action.payload;
@@ -233,4 +237,4 @@ export const updateNote = createAsyncThunk(
 
 
 export default recordsSlice.reducer;
-export const { setSelectedDate, setSelectedMonth, setEditingNoteId, setNoteInput, setFilterStaff, setSelectedStaff, setSelectedStatus, setEditingRecord } = recordsSlice.actions;
+export const { setSelectedDate, setSelectedMonth, setEditingNoteId, setNoteInput, setFilterStaff, setSelectedStaff, setSelectedStatus, setEditingRecord, setSelectedWeekday } = recordsSlice.actions;

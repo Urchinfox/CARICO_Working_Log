@@ -9,7 +9,7 @@ import AddModal from "../../components/AddModal";
 import supabase from "../../supabase";
 import { Link } from "react-router-dom";
 import { Outlet } from "react-router-dom";
-import { fetchAttendance, updateNote, setSelectedDate, setSelectedMonth, setEditingNoteId, setNoteInput } from "../../slices/recordsSlice";
+import { fetchAttendance, setSelectedDate, setSelectedMonth } from "../../slices/recordsSlice";
 
 
 export default function AdminDashBoard() {
@@ -213,52 +213,6 @@ export default function AdminDashBoard() {
                     指定日期
                 </Link>
             </div>
-
-            {/* <!-- 統計數據卡片 --> */}
-            <div class="row px-5">
-
-                <div class="col-md-3">
-
-                    <div class="summary-box r-24 bg-white">
-                        <h5>異常紀錄</h5>
-                        <div class="d-flex mt-5 justify-content-between">
-
-                            <div>
-                                <span class="text-secondary fs-6">遲到</span>
-                                <br />
-                                <h4 class="fw-light num">3</h4>
-                            </div>
-                            <div class="ms-3">
-                                <span class="text-secondary fs-6">早退</span>
-                                <br />
-                                <h4 class="fw-light num">2</h4>
-                            </div>
-                            <div class="ms-3">
-                                <span class="text-secondary fs-6">曠職</span>
-                                <br />
-                                <h4 class="fw-light num">4</h4>
-                            </div>
-                            <div class="ms-3">
-                                <span class="text-secondary fs-6">未打下班卡</span>
-                                <br />
-                                <h4 class="fw-light num">0</h4>
-                            </div>
-
-                        </div>
-                    </div>
-
-                </div>
-
-
-            </div>
-
-
-
-
-
-
-
-
 
 
             <Outlet />
