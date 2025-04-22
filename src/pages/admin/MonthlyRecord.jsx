@@ -78,7 +78,7 @@ export default function MonthlyRecord() {
     };
 
     const displayRecords = useMemo(() => {
-        let records = selectedStaff === "all" ? monthlyRecords : individual;
+        let records = selectedStaff === "all" ? monthlyRecords.filter(item => item.name !== 'Snan') : individual
         if (selectedStatus) {
             if (selectedStatus === "所有異常") {
                 records = records.filter((item) => item.status !== "正常");
@@ -94,27 +94,7 @@ export default function MonthlyRecord() {
         return records;
     }, [monthlyRecords, individual, selectedStaff, selectedStatus, selectedWeekday]);
 
-    // const renderRecords = () => {
 
-    //     let displayRecords = selectedStaff === "all" ? monthlyRecords : individual;
-    //     if (selectedStatus) {
-    //         if (selectedStatus === '所有異常') {
-    //             displayRecords = displayRecords.filter(item => item.status !== '正常');
-    //         } else {
-    //             displayRecords = displayRecords.filter(item => item.status.includes(selectedStatus));
-    //         }
-    //     }
-
-    //     if (selectedWeekday.length > 0) {
-    //         displayRecords = displayRecords.filter((item) =>
-    //             selectedWeekday.includes(new Date(item.date).getDay())
-    //         );
-    //     }
-
-    //     return displayRecords;
-    // }
-
-    // const displayRecords = renderRecords();
 
     useEffect(() => {
         const stats = {
@@ -131,32 +111,30 @@ export default function MonthlyRecord() {
 
 
     return (<>
-        <StatisticsCard dataCard={dataCard} />
-
-        <div className="container">
-            <h2>整月總覽</h2>
-
+        <div className="container-fluid mt-5">
             <input
                 type="month"
                 value={selectedMonth}
                 onChange={(e) => dispatch(setSelectedMonth(e.target.value))}
-                className="border border-gray-300 rounded-md px-4 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-700"
+                className="mb-2 border border-gray-300 rounded-md px-4 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-700"
             />
-
-
         </div>
-        <section>
-            <div>
 
-                {/* <!-- 搜尋與按鈕 --> */}
-                <div className="d-flex justify-content-between my-5 px-5">
+        <StatisticsCard dataCard={dataCard} />
 
-                    <div className="d-flex align-items-center w-50">
-                        <input type="text" className="form-control r-99 py-2 w-50" placeholder="🔍 搜尋" />
-                        <button type="button" className="btn btn-dark border_2px d-flex align-items-center r-16 p-2 ms-2" onClick={openFilterModal}>
-                            <i className="bi bi-filter-circle fs-4 me-1"></i>篩選
-                        </button>
+        <section className="mt-5">
+            <div className="container-fluid">
+                <div className="row">
+                    <div className="col-3">
+                        <input type="text" className="form-control r-99 py-2 w-100" placeholder="🔍 搜尋 - 有需要再開發" disabled />
 
+                    </div>
+                    <div className="col-9 d-flex align-items-center">
+                        <div>
+                            <button type="button" className="btn btn-dark border_2px r-16 p-2 ms-2" onClick={openFilterModal}>
+                                <i className="bi bi-filter-circle fs-4 me-1"></i>篩選
+                            </button>
+                        </div>
                         <div className="ms-3">
                             <span className={`me-3 badge text-bg-info position-relative ${selectedStaff !== 'all' ? 'd-inline-block' : 'd-none'}`}><i className="bi bi-x-circle position-absolute top-0 start-100 translate-middle text-secondary" style={{ cursor: 'pointer' }} onClick={() => handleSelect('all')}> </i>{selectedStaff}</span>
 
@@ -173,16 +151,17 @@ export default function MonthlyRecord() {
 
                         </div>
 
-
                     </div>
 
-
                 </div>
+
                 <FilterStatusModal close={closeFilterModal} handleSelect={handleSelect} />
 
             </div>
+        </section>
 
-            <div className="px-5">
+        <section>
+            <div className="py-5">
                 <div className="table-responsive r-24 border_2px">
                     <table className="table table-bordered text-center align-middle">
                         <thead className="table-light">
@@ -197,7 +176,7 @@ export default function MonthlyRecord() {
                             </tr>
                         </thead>
                         <tbody>
-                            {monthlyRecords.length === 0 ? (
+                            {displayRecords.length === 0 ? (
                                 <tr>
                                     <td colSpan="7">無紀錄</td>
                                 </tr>
@@ -237,6 +216,5 @@ export default function MonthlyRecord() {
             <NoteModal closeNoteModal={closeNoteModal} />
         </section>
     </>);
-
 
 }

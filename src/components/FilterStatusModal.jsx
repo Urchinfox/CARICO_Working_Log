@@ -19,6 +19,9 @@ export default function FilterStatusModal({ close, handleSelect }) {
             dispatch(setSelectedWeekday(weekday))
         }
         close();
+        setWeekday([]);
+        setStatus('');
+        setStaffName('');
     }
 
     const toggleWeekday = (day) => {
@@ -46,7 +49,7 @@ export default function FilterStatusModal({ close, handleSelect }) {
                         <div className="d-flex gap-2 mb-4 flex-wrap">
                             <button type="button" className={`btn filter-btn ${status === '遲到' ? 'active' : ''}`} onClick={() => setStatus('遲到')} >遲到</button>
                             <button type="button" className={`btn filter-btn ${status === '早退' ? 'active' : ''}`} onClick={() => setStatus('早退')} >早退</button>
-                            <button type="button" className={`btn filter-btn ${status === '未打下班卡' ? 'active' : ''}`} onClick={() => setStatus('未打下班卡')}>未打卡</button>
+                            <button type="button" className={`btn filter-btn ${status === '未打卡下班' ? 'active' : ''}`} onClick={() => setStatus('未打卡下班')}>未打卡</button>
                             <button type="button" className={`btn filter-btn ${status === '曠職' ? 'active' : ''}`} onClick={() => setStatus('曠職')}>曠職</button>
                             <button type="button" className={`btn filter-btn ${status === '所有異常' ? 'active' : ''}`} onClick={() => setStatus('所有異常')}>所有異常</button>
                         </div>
@@ -116,23 +119,6 @@ export default function FilterStatusModal({ close, handleSelect }) {
                             </div>
                         </div>
 
-                        {/* <div className="mb-4">
-                            <p className="mb-0 text-secondary mb-4">選擇星期 *選填*</p>
-                            <select
-                                className="form-select custom-select py-3"
-                                value={weekday}
-                                onChange={(e) => setWeekday(e.target.value)}
-                            >
-                                <option value="all">所有星期</option>
-                                <option value="1">星期一</option>
-                                <option value="2">星期二</option>
-                                <option value="3">星期三</option>
-                                <option value="4">星期四</option>
-                                <option value="5">星期五</option>
-                                <option value="6">星期六</option>
-                                <option value="0">星期日</option>
-                            </select>
-                        </div> */}
 
                         <div className="mb-4">
                             <p className="mb-0 text-secondary mb-4">選擇員工 *選填*</p>

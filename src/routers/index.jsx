@@ -4,7 +4,7 @@ import CheckIn from '../pages/checkIn/checkin';
 import AdminDashBoard from '../pages/admin/admin';
 import DailyRecord from '../pages/admin/DailyRecord';
 import MonthlyRecord from '../pages/admin/MonthlyRecord';
-
+import StaffList from '../pages/admin/staffList/staffList';
 const routers = createHashRouter([
     {
         path: '/',
@@ -27,6 +27,10 @@ const routers = createHashRouter([
                 element: <MonthlyRecord />
             }
         ]
+    },
+    {
+        path: 'staff_list',
+        element: <StaffList />
     }
 
 ])

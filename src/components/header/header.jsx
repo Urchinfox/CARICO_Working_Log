@@ -2,6 +2,7 @@ import Logo from '../../assets/logo.png'
 import { handleLogout } from '../../slices/authSlice'
 import { useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 export default function Navbar({ user }) {
     const dispatch = useDispatch();
@@ -23,8 +24,15 @@ export default function Navbar({ user }) {
                             )
                         }
                     </div>
+                    <div>
+                        {
+                            user === 'admin' && (<button type='button' className='border-0'><Link to='/staff_list'>員工管理</Link></button>)
+                        }
+                        <button className="border-0 ms-3" type='button' onClick={() => dispatch(handleLogout(navigate))}>登出</button>
 
-                    <button className="border-0" type='button' onClick={() => dispatch(handleLogout(navigate))}>登出</button>
+
+                    </div>
+
                 </div>
             </div>
         </nav>

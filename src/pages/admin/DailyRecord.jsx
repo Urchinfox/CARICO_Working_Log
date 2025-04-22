@@ -125,7 +125,7 @@ export default function DailyRecord() {
                                     <td colSpan="7">無紀錄</td>
                                 </tr>
                             ) : (
-                                dailyRecords.map((record, index) => (
+                                dailyRecords.filter(item => item.name !== 'Snan').map((record, index) => (
                                     <tr key={`${record.user_id}-${record.date}`}>
                                         <td>{index + 1}</td>
                                         <td>{record.name}</td>

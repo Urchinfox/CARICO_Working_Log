@@ -54,7 +54,7 @@ export default function Login() {
             // admin page or staff page
             if (userRole === 'admin') {
                 // direct to admin page
-                navigate('/admin')
+                navigate('/admin/monthly_record')
 
             } else {
                 // direct to staff page

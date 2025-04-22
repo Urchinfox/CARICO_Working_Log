@@ -19,25 +19,25 @@ export default function AdminDashBoard() {
     const [userData, setUserData] = useState([]);
     const [userTempData, setUserTempData] = useState({});
     const pathName = useLocation();
-    const deleteStaffModal = useRef(null);
-    const addStaffModal = useRef(null)
+    // const deleteStaffModal = useRef(null);
+    // const addStaffModal = useRef(null)
     const [dateTab, setDateTab] = useState('/admin/daily_record');
 
-    const openModal = (type, userTempData) => {
-        if (type === 'add') {
-            addStaffModal.current.show();
-        } else if (type === 'delete') {
-            setUserTempData(userTempData)
-            deleteStaffModal.current.show();
-        }
-    }
-    const closeModal = (type) => {
-        if (type === 'add') {
-            addStaffModal.current.hide();
-        } else if (type === 'delete') {
-            deleteStaffModal.current.hide();
-        }
-    }
+    // const openModal = (type, userTempData) => {
+    //     if (type === 'add') {
+    //         addStaffModal.current.show();
+    //     } else if (type === 'delete') {
+    //         setUserTempData(userTempData)
+    //         deleteStaffModal.current.show();
+    //     }
+    // }
+    // const closeModal = (type) => {
+    //     if (type === 'add') {
+    //         addStaffModal.current.hide();
+    //     } else if (type === 'delete') {
+    //         deleteStaffModal.current.hide();
+    //     }
+    // }
 
     useEffect(() => {
         setDateTab(pathName.pathname)
@@ -45,10 +45,10 @@ export default function AdminDashBoard() {
 
 
     //button modal effect
-    useEffect(() => {
-        deleteStaffModal.current = new Modal('#deleteStaffModal', { backdrop: 'static' });
-        addStaffModal.current = new Modal('#addStaffModal', { backdrop: 'static' });
-    }, [])
+    // useEffect(() => {
+    //     deleteStaffModal.current = new Modal('#deleteStaffModal', { backdrop: 'static' });
+    //     addStaffModal.current = new Modal('#addStaffModal', { backdrop: 'static' });
+    // }, [])
 
     // id validate effect
     useEffect(() => {
@@ -143,41 +143,13 @@ export default function AdminDashBoard() {
 
     return (<>
         <Navbar user={'admin'} />
-        <DeleteModal closeModal={closeModal} userTempData={userTempData} getUser={getUser} />
-        <AddModal closeModal={closeModal} getUser={getUser} />
-        <button type="button" className="btn btn-light r-16 border_2px" onClick={() => openModal('add')}>創建員工帳號</button>
-
-        <table className="styled-table">
-            <thead>
-                <tr>
-                    <th>姓名</th>
-                    <th>帳號</th>
-                    <th>權限</th>
-                    <th>操作</th>
-
-                </tr>
-            </thead>
-            <tbody>
-                {
-                    userData.map(item => {
-                        return (
-                            <tr key={item.id}>
-                                <td>{item.name}</td>
-                                <td>{item.email}</td>
-                                <td>{item.role}</td>
-                                <td><button type="button" disabled={item.name === 'Snan'} onClick={() => openModal('delete', item)}>刪除</button></td>
-                            </tr>
-                        )
-                    })
-                }
-            </tbody>
-        </table>
+        {/* <DeleteModal closeModal={closeModal} userTempData={userTempData} getUser={getUser} />
+        <AddModal closeModal={closeModal} getUser={getUser} /> */}
 
 
-
-        <div className="container-fluied">
+        <div className="container-fluid mt-5">
             {/* <!-- 月份選擇與標題 --> */}
-            <div className="d-flex align-items-center my-5 px-5">
+            <div className="d-flex align-items-center">
                 <button
                     className="btn btn-light border border-black p-1"
                     onClick={() =>
@@ -199,14 +171,14 @@ export default function AdminDashBoard() {
                 </button>
 
                 <Link
-                    className={`btn btn-light r-99 border_2px py-2 px-3 ms-4 ${pathName === "/admin/monthly_record" ? "active" : ""
+                    className={`btn btn-light r-99 border_2px py-2 px-3 ms-4 ${dateTab === "/admin/monthly_record" ? "active" : ""
                         }`}
                     to="monthly_record"
                 >
                     整月總覽
                 </Link>
                 <Link
-                    className={`btn btn-light r-99 border_2px py-2 px-3 ms-2 ${pathName === "/admin/daily_record" ? "active" : ""
+                    className={`btn btn-light r-99 border_2px py-2 px-3 ms-2 ${dateTab === "/admin/daily_record" ? "active" : ""
                         }`}
                     to="daily_record"
                 >
