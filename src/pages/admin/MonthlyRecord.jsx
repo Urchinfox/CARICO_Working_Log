@@ -109,15 +109,46 @@ export default function MonthlyRecord() {
         console.log("Stats updated:", stats);
     }, [displayRecords]);
 
+    const goToPreviousMonth = () => {
+        const [year, month] = selectedMonth.split("-");
+        const date = new Date(parseInt(year), parseInt(month) - 1);
+        date.setMonth(date.getMonth() - 1);
+        const newMonth = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
+        dispatch(setSelectedMonth(newMonth));
+    };
+
+    const goToNextMonth = () => {
+        const [year, month] = selectedMonth.split("-");
+        const date = new Date(parseInt(year), parseInt(month) - 1);
+        date.setMonth(date.getMonth() + 1);
+        const newMonth = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
+        dispatch(setSelectedMonth(newMonth));
+    };
+
 
     return (<>
         <div className="container-fluid mt-5">
-            <input
-                type="month"
-                value={selectedMonth}
-                onChange={(e) => dispatch(setSelectedMonth(e.target.value))}
-                className="mb-2 border border-gray-300 rounded-md px-4 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-700"
-            />
+            <div className="d-flex align-items-center">
+                <button
+                    className="btn btn-light border border-black p-1 me-3"
+                    onClick={goToPreviousMonth}
+                >
+                    <i className="bi bi-chevron-left"></i>
+                </button>
+                <input
+                    type="month"
+                    value={selectedMonth}
+                    onChange={(e) => dispatch(setSelectedMonth(e.target.value))}
+                    className=" border border-gray-300 rounded-md px-4 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-700"
+                />
+                <button
+                    className="btn btn-light border border-black p-1 ms-3"
+                    onClick={goToNextMonth}
+                >
+                    <i className="bi bi-chevron-right"></i>
+                </button>
+
+            </div>
         </div>
 
         <StatisticsCard dataCard={dataCard} />

@@ -25,7 +25,8 @@ const routers = createHashRouter([
             {
                 path: 'monthly_record',
                 element: <MonthlyRecord />
-            }
+            },
+
         ]
     },
     {
