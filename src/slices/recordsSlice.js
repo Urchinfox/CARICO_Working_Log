@@ -14,11 +14,19 @@ export const recordsSlice = createSlice({
         noteInput: "",
         loading: false,
         error: null,
-        individual: [],
-        selectedStaff: "all",
+        monthlyFilteredResult: [],   //deal with filtered result for monthly records
+        dailyFilteredResult: [],   //deal with filtered result for monthly records
+        dailySelectedStaff: "all",
+        monthlySelectedStaff: "all",
         selectedStatus: '',
         selectedWeekday: [],
         editingRecord: null,
+        statusCard: {
+            late: 0,
+            earlyExit: 0,
+            absence: 0,
+            non_checkout: 0
+        }
     },
     reducers: {
         setSelectedDate(state, action) {
@@ -34,11 +42,21 @@ export const recordsSlice = createSlice({
             state.noteInput = action.payload;
         },
         setFilterStaff(state, action) {
-            state.individual = action.payload;
-            console.log(action.payload)
+            const { data, type } = action.payload;
+            if (type === 'monthly') {
+                state.monthlyFilteredResult = data;
+            } else if (type === 'daily') {
+                state.dailyFilteredResult = data;
+            }
+            console.log(data)
         },
         setSelectedStaff(state, action) {
-            state.selectedStaff = action.payload;
+            const { name, type } = action.payload
+            if (type === 'monthly') {
+                state.monthlySelectedStaff = name;
+            } else if (type === 'daily') {
+                state.dailySelectedStaff = name;
+            }
         },
         setSelectedStatus(state, action) {
             state.selectedStatus = action.payload;
@@ -51,6 +69,9 @@ export const recordsSlice = createSlice({
         },
         setDateRange(state, action) {
             state.dateRange = action.payload;
+        },
+        setStatusCard(state, action) {
+            state.statusCard = action.payload
         }
 
     },
@@ -455,4 +476,4 @@ export const updateNote = createAsyncThunk(
 
 
 export default recordsSlice.reducer;
-export const { setSelectedDate, setSelectedMonth, setEditingNoteId, setNoteInput, setFilterStaff, setSelectedStaff, setSelectedStatus, setEditingRecord, setSelectedWeekday, setDateRange } = recordsSlice.actions;
+export const { setSelectedDate, setSelectedMonth, setEditingNoteId, setNoteInput, setFilterStaff, setSelectedStaff, setSelectedStatus, setEditingRecord, setSelectedWeekday, setDateRange, setStatusCard } = recordsSlice.actions;

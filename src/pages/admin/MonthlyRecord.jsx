@@ -1,5 +1,5 @@
 import { useSelector, useDispatch } from "react-redux";
-import { setSelectedMonth, setEditingNoteId, setNoteInput, setFilterStaff, setSelectedStaff, setSelectedStatus, setEditingRecord, setSelectedWeekday } from "../../slices/recordsSlice";
+import { setSelectedMonth, setEditingNoteId, setNoteInput, setFilterStaff, setSelectedStaff, setSelectedStatus, setEditingRecord, setSelectedWeekday, setStatusCard } from "../../slices/recordsSlice";
 import { useEffect, useRef, useState, useMemo } from "react";
 import NoteModal from "../../components/NoteModal";
 import { Modal } from "bootstrap";
@@ -7,15 +7,10 @@ import FilterStatusModal from "../../components/FilterStatusModal";
 import StatisticsCard from "./StatisticsCard";
 
 export default function MonthlyRecord() {
-    const { monthlyRecords, selectedMonth, individual, selectedStaff, selectedStatus, selectedWeekday } = useSelector((state) => state.record);
+    const { monthlyRecords, selectedMonth, monthlyFilteredResult, monthlySelectedStaff, selectedStatus, selectedWeekday, loading, statusCard } = useSelector((state) => state.record);
     const addNoteModal = useRef();
     const filterStatusModal = useRef(null);
-    const [dataCard, setDataCard] = useState({
-        late: 0,
-        earlyExit: 0,
-        absence: 0,
-        non_checkout: 0
-    });
+
 
     const dispatch = useDispatch();
 
@@ -35,34 +30,39 @@ export default function MonthlyRecord() {
         filterStatusModal.current.hide();
     }
 
-    //Modal
+    //init 
     useEffect(() => {
-        addNoteModal.current = new Modal('#addNoteModal', { backdrop: 'static' })
-        filterStatusModal.current = new Modal('#filterModal')
-    }, [])
+        addNoteModal.current = new Modal("#addNoteModal", { backdrop: "static" });
+        filterStatusModal.current = new Modal("#filterModal");
+        dispatch(setSelectedStaff({ name: "all", type: "monthly" }));
+        dispatch(setFilterStaff({ data: [], type: "monthly" }));
+    }, [dispatch]);
 
     const handleSelect = (name) => {
         const staffName = name;
-        console.log(staffName)
         if (staffName === "all") {
-            dispatch(setSelectedStaff("all"));
-            dispatch(setFilterStaff([])); // empty individual
+            dispatch(setSelectedStaff({ name: "all", type: 'monthly' }));
+            dispatch(setFilterStaff({ data: [], type: "monthly" }));// empty monthlyFilteredResult
             // dispatch(setSelectedStatus('')); //empty status
         } else {
             const filterStaff = monthlyRecords.filter(item => item.name === staffName);
-            dispatch(setSelectedStaff(staffName)); //select name
-            dispatch(setFilterStaff(filterStaff)); //render
+            dispatch(setSelectedStaff({ name: staffName, type: 'monthly' })); //select name
+            dispatch(setFilterStaff({ data: filterStaff, type: 'monthly' })); //render
             dispatch(setSelectedStatus('')); //empty status
         }
+
     };
 
     //staff filter
     useEffect(() => {
-        if (selectedStaff !== "all") {
-            const filterStaff = monthlyRecords.filter(item => item.name === selectedStaff);
-            dispatch(setFilterStaff(filterStaff));
+        if (monthlySelectedStaff !== "all") {
+            const filterStaff = monthlyRecords.filter(item => item.name === monthlySelectedStaff);
+            // 僅當 monthlyFilteredResult 不匹配時更新
+            if (JSON.stringify(filterStaff) !== JSON.stringify(monthlyFilteredResult)) {
+                dispatch(setFilterStaff({ data: filterStaff, type: "monthly" }));
+            }
         }
-    }, [monthlyRecords, selectedStaff, dispatch]);
+    }, [monthlyRecords, monthlySelectedStaff, monthlyFilteredResult, dispatch]);
 
     const getWeekday = (date) => {
         const weekdays = [
@@ -78,7 +78,7 @@ export default function MonthlyRecord() {
     };
 
     const displayRecords = useMemo(() => {
-        let records = selectedStaff === "all" ? monthlyRecords.filter(item => item.name !== 'Snan') : individual
+        let records = monthlySelectedStaff === "all" ? monthlyRecords.filter(item => item.name !== 'Snan') : monthlyFilteredResult
         if (selectedStatus) {
             if (selectedStatus === "所有異常") {
                 records = records.filter((item) => item.status !== "正常");
@@ -92,10 +92,10 @@ export default function MonthlyRecord() {
             );
         }
         return records;
-    }, [monthlyRecords, individual, selectedStaff, selectedStatus, selectedWeekday]);
+    }, [monthlyRecords, monthlyFilteredResult, monthlySelectedStaff, selectedStatus, selectedWeekday]);
 
 
-
+    // filter status 
     useEffect(() => {
         const stats = {
             late: displayRecords.filter((item) => item.status.includes("遲到")).length,
@@ -105,9 +105,11 @@ export default function MonthlyRecord() {
                 item.status.includes("未打卡下班")
             ).length,
         };
-        setDataCard(stats);
+        dispatch(setStatusCard(stats));
         console.log("Stats updated:", stats);
     }, [displayRecords]);
+
+
 
     const goToPreviousMonth = () => {
         const [year, month] = selectedMonth.split("-");
@@ -151,7 +153,7 @@ export default function MonthlyRecord() {
             </div>
         </div>
 
-        <StatisticsCard dataCard={dataCard} />
+        <StatisticsCard dataCard={statusCard} />
 
         <section className="mt-5">
             <div className="container-fluid">
@@ -167,13 +169,13 @@ export default function MonthlyRecord() {
                             </button>
                         </div>
                         <div className="ms-3">
-                            <span className={`me-3 badge text-bg-info position-relative ${selectedStaff !== 'all' ? 'd-inline-block' : 'd-none'}`}><i className="bi bi-x-circle position-absolute top-0 start-100 translate-middle text-secondary" style={{ cursor: 'pointer' }} onClick={() => handleSelect('all')}> </i>{selectedStaff}</span>
+                            <span className={`me-3 filter_chip fs-5 r-16 p-2 position-relative ${monthlySelectedStaff !== 'all' ? 'd-inline-block' : 'd-none'}`}><i className="bi bi-x-circle position-absolute top-0 start-100 translate-middle text-secondary" style={{ cursor: 'pointer' }} onClick={() => handleSelect('all')}> </i>{monthlySelectedStaff}</span>
 
-                            <span className={`me-3 badge text-bg-info position-relative ${selectedStatus !== '' ? 'd-inline-block' : 'd-none'}`}><i className="bi bi-x-circle position-absolute top-0 start-100 translate-middle text-secondary" style={{ cursor: 'pointer' }} onClick={() => dispatch(setSelectedStatus(''))}></i>{selectedStatus}</span>
+                            <span className={`me-3 filter_chip  fs-5 r-16 p-2 position-relative ${selectedStatus !== '' ? 'd-inline-block' : 'd-none'}`}><i className="bi bi-x-circle position-absolute top-0 start-100 translate-middle text-secondary" style={{ cursor: 'pointer' }} onClick={() => dispatch(setSelectedStatus(''))}></i>{selectedStatus}</span>
                             {
                                 selectedWeekday.map((day, index) => {
                                     return (
-                                        <span key={index} className={`me-3 badge text-bg-info position-relative ${selectedWeekday.length > 0 ? 'd-inline-block' : 'd-none'}`}><i className="bi bi-x-circle position-absolute top-0 start-100 translate-middle text-secondary" style={{ cursor: 'pointer' }}
+                                        <span key={index} className={`me-3 filter_chip r-16 p-2 position-relative ${selectedWeekday.length > 0 ? 'd-inline-block' : 'd-none'}`}><i className="bi bi-x-circle position-absolute top-0 start-100 translate-middle text-secondary" style={{ cursor: 'pointer' }}
                                             onClick={() => dispatch(setSelectedWeekday(selectedWeekday.filter(d => d !== day)))
                                             } ></i>{day}</span>
                                     )
@@ -190,8 +192,16 @@ export default function MonthlyRecord() {
 
             </div>
         </section>
+        {loading && (
+            <div className="text-center">
+                <div className="spinner-border" role="status">
+                    <span className="visually-hidden">載入中...</span>
+                </div>
+            </div>
+        )}
 
         <section>
+
             <div className="py-5">
                 <div className="table-responsive r-24 border_2px">
                     <table className="table table-bordered text-center align-middle">

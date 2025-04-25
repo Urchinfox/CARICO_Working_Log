@@ -26,9 +26,9 @@ export default function Navbar({ user }) {
                     </div>
                     <div>
                         {
-                            user === 'admin' && (<button type='button' className='border-0'><Link to='/staff_list'>員工管理</Link></button>)
+                            user === 'admin' && (<button type='button' className='border-0 py-2'><Link to='/staff_list'>員工管理</Link></button>)
                         }
-                        <button className="border-0 ms-3" type='button' onClick={() => dispatch(handleLogout(navigate))}>登出</button>
+                        <button className="border-0 ms-3 py-2" type='button' onClick={() => dispatch(handleLogout(navigate))}>登出</button>
 
 
                     </div>

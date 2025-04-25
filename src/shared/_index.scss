@@ -195,9 +195,16 @@
 
 
 
+// admin filtered badge 
 .filter-btn:hover,
 .filter-btn.active:hover {
     background-color: #F3DEDE;
     border: 2px solid #E12222;
     color: #E12222;
+}
+
+
+//
+.filter_chip {
+    background-color: #D3F0CA;
 }

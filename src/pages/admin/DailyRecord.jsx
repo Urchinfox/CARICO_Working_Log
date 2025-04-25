@@ -1,31 +1,40 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setEditingNoteId, setNoteInput, setEditingRecord, setDateRange, fetchAttendance } from "../../slices/recordsSlice";
+import { setEditingNoteId, setNoteInput, setEditingRecord, setDateRange, fetchAttendance, setStatusCard, setSelectedStaff, setFilterStaff } from "../../slices/recordsSlice";
 import NoteModal from "../../components/NoteModal";
 import { Modal } from "bootstrap";
+import StatisticsCard from "./StatisticsCard";
 
 export default function DailyRecord() {
-    const { dailyRecords, dateRange, loading } = useSelector((state) => state.record);
+    const { dailyRecords, dateRange, loading, statusCard, dailySelectedStaff, dailyFilteredResult } = useSelector((state) => state.record);
     const dispatch = useDispatch();
     const addNoteModal = useRef(null);
     const [startDate, setStartDate] = useState(dateRange?.startDate ?? "");
     const [endDate, setEndDate] = useState(dateRange?.endDate ?? "");
-    const [today, setToday] = useState();
+
+    //init
+    useEffect(() => {
+        dispatch(setSelectedStaff({ name: "all", type: "daily" }));
+        dispatch(setFilterStaff({ data: [], type: "daily" }));
+    }, [dispatch]);
 
     useEffect(() => {
         addNoteModal.current = new Modal("#addNoteModal", { backdrop: "static" });
-
-        //default the day
         if (!dateRange?.startDate || !dateRange?.endDate) {
             const today = new Date().toISOString().split("T")[0];
-            const defaultRange = {
-                startDate: today,
-                endDate: today,
-            };
+            const defaultRange = { startDate: today, endDate: today };
             dispatch(setDateRange(defaultRange));
             dispatch(fetchAttendance({ mode: "daily", dateRange: defaultRange }));
         }
-    }, [dispatch, dateRange]);
+        if (dailySelectedStaff === "all") {
+            dispatch(setFilterStaff({ data: [], type: "daily" }));
+        } else {
+            dispatch(setFilterStaff({
+                data: dailyRecords.filter(item => item.name === dailySelectedStaff),
+                type: "daily"
+            }));
+        }
+    }, [dispatch, dateRange, dailySelectedStaff, dailyRecords]);
 
     const openNoteModal = () => {
         addNoteModal.current.show();
@@ -50,17 +59,47 @@ export default function DailyRecord() {
         dispatch(fetchAttendance({ mode: "daily", dateRange: range }));
     };
 
+    useEffect(() => {
+        const stats = {
+            late: dailyRecords.filter((item) => item.status.includes("遲到")).length,
+            earlyExit: dailyRecords.filter((item) => item.status.includes("早退")).length,
+            absence: dailyRecords.filter((item) => item.status === "曠職").length,
+            non_checkout: dailyRecords.filter((item) =>
+                item.status.includes("未打卡下班")
+            ).length,
+        };
+        dispatch(setStatusCard(stats));
+    }, [dailyRecords]);
+
+    const getWeekday = (date) => {
+        const weekdays = [
+            "日",
+            "一",
+            "二",
+            "三",
+            "四",
+            "五",
+            "六",
+        ];
+        return weekdays[new Date(date).getDay()];
+    };
+
+    const displayRecords = useMemo(() => {
+        return dailySelectedStaff === "all"
+            ? dailyRecords.filter(item => item.name !== "Snan")
+            : dailyFilteredResult;
+    }, [dailyRecords, dailyFilteredResult, dailySelectedStaff]);
+
     return (
         <section>
-
+            {JSON.stringify(dailySelectedStaff)}
             <div className="d-flex justify-content-between align-items-center mb-4">
                 <div>
                     <p className="fs-4"> {startDate === endDate ? startDate : `${startDate} - ${endDate}`}</p>
-
-
                 </div>
 
                 <div>
+
                     <button
                         type="button"
                         className="btn btn-light border_2px dropdown-toggle py-2 px-3 ms-2"
@@ -95,6 +134,7 @@ export default function DailyRecord() {
                     </div>
                 </div>
             </div>
+            <StatisticsCard dataCard={statusCard} />
 
             {loading && (
                 <div className="text-center">
@@ -103,7 +143,13 @@ export default function DailyRecord() {
                     </div>
                 </div>
             )}
-            <div className="table-responsive r-24 border_2px">
+            <select className="form-select form-select-sm w-25" onChange={(e) => dispatch(setSelectedStaff({ name: e.target.value, type: 'daily' }))}>
+                <option defaultValue='all'>選擇員工</option>
+                <option value="黃偉宸">黃偉宸</option>
+                <option value="許之瑜">許之瑜</option>
+            </select>
+
+            <div className="table-responsive r-24 border_2px mt-5 mb-5">
                 <table className="table table-bordered text-center align-middle">
                     <thead className="table-light">
                         <tr>
@@ -117,56 +163,54 @@ export default function DailyRecord() {
                         </tr>
                     </thead>
                     <tbody>
-                        {dailyRecords.length === 0 ? (
+                        {displayRecords.length === 0 ? (
                             <tr>
                                 <td colSpan="7">無紀錄</td>
                             </tr>
                         ) : (
-                            dailyRecords
-                                .filter((item) => item.name !== "Snan")
-                                .map((record, index) => (
-                                    <tr key={`${record.user_id}-${record.date}`}>
-                                        <td>{index + 1}</td>
-                                        <td>{record.name}</td>
-                                        <td>{record.date}</td>
-                                        <td>
-                                            {record.check_in_time} — {record.check_out_time}
-                                        </td>
-                                        <td>
-                                            <span
-                                                className={`${record.status === "正常"
-                                                    ? "status-normal"
-                                                    : "status-abnormal"
-                                                    }`}
-                                            >
-                                                {record.status}
-                                            </span>
-                                        </td>
-                                        <td>公司外</td>
-                                        <td>
-                                            {record.notes}{" "}
-                                            <button
-                                                className="underline border-0 p-2 ms-2"
-                                                onClick={() => {
-                                                    openNoteModal();
-                                                    dispatch(
-                                                        setEditingNoteId(
-                                                            `${record.user_id}-${record.date}`
-                                                        )
-                                                    );
-                                                    dispatch(
-                                                        setNoteInput(
-                                                            record.notes === "無" ? "" : record.notes
-                                                        )
-                                                    );
-                                                    dispatch(setEditingRecord(record));
-                                                }}
-                                            >
-                                                編輯
-                                            </button>
-                                        </td>
-                                    </tr>
-                                ))
+                            displayRecords.map((record, index) => (
+                                <tr key={`${record.user_id}-${record.date}`}>
+                                    <td>{index + 1}</td>
+                                    <td>{record.name}</td>
+                                    <td>{record.date} ({getWeekday(record.date)})</td>
+                                    <td>
+                                        {record.check_in_time} — {record.check_out_time}
+                                    </td>
+                                    <td>
+                                        <span
+                                            className={`${record.status === "正常"
+                                                ? "status-normal"
+                                                : "status-abnormal"
+                                                }`}
+                                        >
+                                            {record.status}
+                                        </span>
+                                    </td>
+                                    <td>公司外</td>
+                                    <td>
+                                        {record.notes}{" "}
+                                        <button
+                                            className="underline border-0 p-2 ms-2"
+                                            onClick={() => {
+                                                openNoteModal();
+                                                dispatch(
+                                                    setEditingNoteId(
+                                                        `${record.user_id}-${record.date}`
+                                                    )
+                                                );
+                                                dispatch(
+                                                    setNoteInput(
+                                                        record.notes === "無" ? "" : record.notes
+                                                    )
+                                                );
+                                                dispatch(setEditingRecord(record));
+                                            }}
+                                        >
+                                            編輯
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))
                         )}
                     </tbody>
                 </table>

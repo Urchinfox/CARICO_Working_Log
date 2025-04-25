@@ -6,7 +6,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import supabase from "../../supabase";
 import { Link } from "react-router-dom";
 import { Outlet } from "react-router-dom";
-import { fetchAttendance, setSelectedDate, setSelectedMonth } from "../../slices/recordsSlice";
+import { fetchAttendance, setSelectedMonth } from "../../slices/recordsSlice";
 
 
 export default function AdminDashBoard() {
