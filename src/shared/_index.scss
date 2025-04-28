@@ -204,7 +204,13 @@
 }
 
 
-//
+//filter badge
 .filter_chip {
     background-color: #D3F0CA;
+    border: 2px $primary solid;
+}
+
+.bi-x-circle {
+    background-color: #fff;
+    border-radius: 99px;
 }

@@ -113,41 +113,6 @@ export default function AdminDashBoard() {
 
             </div>
 
-            {/* <!-- 月份選擇與標題 --> */}
-            {/* <div className="">
-                {
-                    dateTab === "/admin/monthly_record" ? (<div className="d-flex align-items-center">
-                        <button
-                            className="btn btn-light border border-black p-1"
-                            onClick={() =>
-                                dateTab === "/admin/monthly_record" ? goToPreviousMonth() : goToPreviousDate()
-                            }
-                        >
-                            <i className="bi bi-chevron-left"></i>
-                        </button>
-                        <h4 className="mx-3 mb-0">
-                            {dateTab === "/admin/monthly_record" ? selectedMonth : selectedDate}
-                        </h4>
-                        <button
-                            className="btn btn-light border border-black p-1"
-                            onClick={() =>
-                                dateTab === "/admin/monthly_record" ? goToNextMonth() : goToNextDate()
-                            }
-                        // go to next function should be move -> pending
-                        >
-                            <i className="bi bi-chevron-right"></i>
-                        </button>
-
-                    </div>) : (<div>
-                        <h4 className="mx-3 mb-0">
-                            {startDate} - {endDate}
-                        </h4>
-                    </div>)
-                }
-
-            </div> */}
-
-
             <Outlet />
         </div>
 

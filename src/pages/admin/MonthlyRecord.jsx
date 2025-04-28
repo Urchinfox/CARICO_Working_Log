@@ -152,8 +152,15 @@ export default function MonthlyRecord() {
 
             </div>
         </div>
+        <div className="container-fluid mt-4">
+            <div className="row">
+                <div className="col-4">
+                    <StatisticsCard dataCard={statusCard} />
 
-        <StatisticsCard dataCard={statusCard} />
+                </div>
+            </div>
+        </div>
+
 
         <section className="mt-5">
             <div className="container-fluid">

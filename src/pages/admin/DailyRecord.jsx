@@ -4,6 +4,7 @@ import { setEditingNoteId, setNoteInput, setEditingRecord, setDateRange, fetchAt
 import NoteModal from "../../components/NoteModal";
 import { Modal } from "bootstrap";
 import StatisticsCard from "./StatisticsCard";
+import FilterTime from "../../components/FilterTime";
 
 export default function DailyRecord() {
     const { dailyRecords, dateRange, loading, statusCard, dailySelectedStaff, dailyFilteredResult } = useSelector((state) => state.record);
@@ -11,6 +12,7 @@ export default function DailyRecord() {
     const addNoteModal = useRef(null);
     const [startDate, setStartDate] = useState(dateRange?.startDate ?? "");
     const [endDate, setEndDate] = useState(dateRange?.endDate ?? "");
+    const [selectedName, setSelectedName] = useState('all')
 
     //init
     useEffect(() => {
@@ -57,19 +59,26 @@ export default function DailyRecord() {
         const range = { startDate, endDate };
         dispatch(setDateRange(range));
         dispatch(fetchAttendance({ mode: "daily", dateRange: range }));
+        dispatch(setSelectedStaff({ name: selectedName, type: 'daily' }))
+
     };
+    const displayRecords = useMemo(() => {
+        return dailySelectedStaff === "all"
+            ? dailyRecords.filter(item => item.name !== "Snan")
+            : dailyFilteredResult;
+    }, [dailyRecords, dailyFilteredResult, dailySelectedStaff]);
 
     useEffect(() => {
         const stats = {
-            late: dailyRecords.filter((item) => item.status.includes("遲到")).length,
-            earlyExit: dailyRecords.filter((item) => item.status.includes("早退")).length,
-            absence: dailyRecords.filter((item) => item.status === "曠職").length,
-            non_checkout: dailyRecords.filter((item) =>
+            late: displayRecords.filter((item) => item.status.includes("遲到")).length,
+            earlyExit: displayRecords.filter((item) => item.status.includes("早退")).length,
+            absence: displayRecords.filter((item) => item.status === "曠職").length,
+            non_checkout: displayRecords.filter((item) =>
                 item.status.includes("未打卡下班")
             ).length,
         };
         dispatch(setStatusCard(stats));
-    }, [dailyRecords]);
+    }, [displayRecords]);
 
     const getWeekday = (date) => {
         const weekdays = [
@@ -84,57 +93,33 @@ export default function DailyRecord() {
         return weekdays[new Date(date).getDay()];
     };
 
-    const displayRecords = useMemo(() => {
-        return dailySelectedStaff === "all"
-            ? dailyRecords.filter(item => item.name !== "Snan")
-            : dailyFilteredResult;
-    }, [dailyRecords, dailyFilteredResult, dailySelectedStaff]);
+
 
     return (
         <section>
-            {JSON.stringify(dailySelectedStaff)}
-            <div className="d-flex justify-content-between align-items-center mb-4">
-                <div>
-                    <p className="fs-4"> {startDate === endDate ? startDate : `${startDate} - ${endDate}`}</p>
-                </div>
 
-                <div>
-
-                    <button
-                        type="button"
-                        className="btn btn-light border_2px dropdown-toggle py-2 px-3 ms-2"
-                        data-bs-toggle="dropdown"
-                    >
-                        選擇日期區間
-                    </button>
-                    <div className="dropdown-menu p-3 date-range">
-                        <form onSubmit={handleDateRangeSubmit}>
-                            <label htmlFor="start" className="mb-2">從：</label>
-                            <input
-                                type="date"
-                                id="start"
-                                name="start"
-                                className="form-control mb-2"
-                                value={startDate}
-                                onChange={(e) => setStartDate(e.target.value)}
-                            />
-                            <label htmlFor="end" className="mb-2">到：</label>
-                            <input
-                                type="date"
-                                id="end"
-                                name="end"
-                                className="form-control mb-2"
-                                value={endDate}
-                                onChange={(e) => setEndDate(e.target.value)}
-                            />
-                            <button type="submit" className="btn btn-sm btn-dark w-100">
-                                查詢
-                            </button>
-                        </form>
+            <div className="container-fluid">
+                <div className="row">
+                    <div className="col-4">
+                        <FilterTime
+                            setStartDate={setStartDate}
+                            setEndDate={setEndDate}
+                            handleDateRangeSubmit={handleDateRangeSubmit}
+                            startDate={startDate}
+                            endDate={endDate}
+                            setSelectedName={setSelectedName}
+                        />
+                    </div>
+                    <div className="col-4 d-flex flex-column">
+                        <div className="h-100">
+                            <StatisticsCard dataCard={statusCard} />
+                        </div>
                     </div>
                 </div>
             </div>
-            <StatisticsCard dataCard={statusCard} />
+            <div className="mt-4">
+                <p className="fs-4"> {startDate === endDate ? startDate : `${startDate} - ${endDate}`}</p>
+            </div>
 
             {loading && (
                 <div className="text-center">
@@ -143,11 +128,6 @@ export default function DailyRecord() {
                     </div>
                 </div>
             )}
-            <select className="form-select form-select-sm w-25" onChange={(e) => dispatch(setSelectedStaff({ name: e.target.value, type: 'daily' }))}>
-                <option defaultValue='all'>選擇員工</option>
-                <option value="黃偉宸">黃偉宸</option>
-                <option value="許之瑜">許之瑜</option>
-            </select>
 
             <div className="table-responsive r-24 border_2px mt-5 mb-5">
                 <table className="table table-bordered text-center align-middle">
