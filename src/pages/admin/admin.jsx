@@ -116,13 +116,5 @@ export default function AdminDashBoard() {
             <Outlet />
         </div>
 
-
-
-
-
-
-
-
-
     </>)
 }

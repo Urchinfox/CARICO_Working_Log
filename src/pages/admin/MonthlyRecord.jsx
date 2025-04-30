@@ -9,7 +9,7 @@ import StatisticsCard from "./StatisticsCard";
 export default function MonthlyRecord() {
     const { monthlyRecords, selectedMonth, monthlyFilteredResult, monthlySelectedStaff, selectedStatus, selectedWeekday, loading, statusCard } = useSelector((state) => state.record);
     const addNoteModal = useRef();
-    const filterStatusModal = useRef(null);
+    const filterStatusModal = useRef();
 
 
     const dispatch = useDispatch();

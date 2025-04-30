@@ -3,10 +3,13 @@ import { handleLogout } from '../../slices/authSlice'
 import { useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 export default function Navbar({ user }) {
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    const { name } = useSelector((state) => state.auth)
+
 
     return (<>
 
@@ -19,7 +22,7 @@ export default function Navbar({ user }) {
                             <img src={Logo} alt="" width="150" height="auto" />
                         </div>
                         {
-                            user === 'staff' ? (<p className="d-none d-lg-block fs-5">您好! 040 許之瑜</p>
+                            user === 'staff' ? (<p className="d-none d-lg-block fs-5">您好! {name}</p>
                             ) : (<p className="d-none d-lg-block fs-5">線上打卡管理系統</p>
                             )
                         }

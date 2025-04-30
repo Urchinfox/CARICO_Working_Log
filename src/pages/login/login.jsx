@@ -76,23 +76,32 @@ export default function Login() {
                         <div className="login_card text-center py-5">
                             <img className="mx-auto" src={Logo} width="150" />
                             <p className="fs-5 text-white mt-4">登入</p>
-                            {/* <div className="d-flex justify-content-center">
-                                <a className="tab tab_active" href="#">員工</a>
-                                <a className="tab tab_default" href="#">管理者</a>
-                            </div> */}
-                            <div className="login_input mx-auto">
-                                <div className="mb-3 text-start fw-lighter">
-                                    <label htmlFor="staffNum" className="form-label text-white">員工帳號</label>
-                                    <input type="email" name="staffNum" className="form-control" id="staffNum" placeholder="040"
-                                        onChange={(e) => setEmail(e.target.value)}
-                                    />
+                            <form onSubmit={submitLogin}>
+                                <div className="login_input mx-auto">
+                                    <div className="mb-3 text-start fw-lighter">
+                                        <label htmlFor="staffNum" className="form-label text-white">員工帳號</label>
+                                        <input
+                                            type="email"
+                                            name="staffNum"
+                                            className="form-control"
+                                            id="staffNum"
+                                            placeholder="040"
+                                            onChange={(e) => setEmail(e.target.value)}
+                                        />
+                                    </div>
+                                    <div className="mb-3 text-start fw-lighter">
+                                        <label htmlFor="password" className="form-label text-white">密碼</label>
+                                        <input
+                                            type="password"
+                                            className="form-control"
+                                            id="password"
+                                            placeholder="請輸入密碼"
+                                            onChange={(e) => setPassword(e.target.value)}
+                                        />
+                                    </div>
                                 </div>
-                                <div className="mb-3 text-start fw-lighter">
-                                    <label htmlFor="password" name="password" className="form-label text-white">密碼</label>
-                                    <input type="password" className="form-control" id="password" placeholder="請輸入密碼" onChange={(e) => setPassword(e.target.value)} />
-                                </div>
-                            </div>
-                            <Link to='/' className="btn btn-primary mt-4" onClick={submitLogin}>登入</Link>
+                                <button type="submit" className="btn btn-primary mt-4">登入</button>
+                            </form>
 
                         </div>
 
