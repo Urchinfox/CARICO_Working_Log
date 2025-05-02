@@ -242,17 +242,23 @@ export default function MonthlyRecord() {
                                         </td>
                                         <td>公司外</td>
                                         <td>
-                                            {record.notes} <br />
-                                            <button
-                                                className="underline border-0 p-2 ms-2"
-                                                onClick={() => {
-                                                    openNoteModal()
-                                                    dispatch(setEditingNoteId(`${record.user_id}-${record.date}`));
-                                                    dispatch(setNoteInput(record.notes === "無" ? "" : record.notes));
-                                                    dispatch(setEditingRecord(record));
-                                                }}
-                                            >編輯備註
-                                            </button>
+                                            <div className="mb-1">
+                                                {record.notes}
+                                            </div>
+                                            <div>
+                                                <button
+                                                    className="bg-transparent  border-0 p-2 ms-2 "
+                                                    style={{ fontSize: '12px' }}
+                                                    onClick={() => {
+                                                        openNoteModal()
+                                                        dispatch(setEditingNoteId(`${record.user_id}-${record.date}`));
+                                                        dispatch(setNoteInput(record.notes === "無" ? "" : record.notes));
+                                                        dispatch(setEditingRecord(record));
+                                                    }}
+                                                ><u>編輯備註</u>
+                                                </button>
+
+                                            </div>
                                         </td>
                                     </tr>
                                 ))

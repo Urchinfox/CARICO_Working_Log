@@ -96,9 +96,8 @@ export default function DailyRecord() {
 
 
     return (
-        <section>
-
-            <div className="container-fluid">
+        <section className="px-3">
+            <div className="container-fluid px-0">
                 <div className="row">
                     <div className="col-4">
                         <FilterTime
@@ -117,6 +116,7 @@ export default function DailyRecord() {
                     </div>
                 </div>
             </div>
+
             <div className="mt-4">
                 <p className="fs-4"> {startDate === endDate ? startDate : `${startDate} - ${endDate}`}</p>
             </div>
@@ -129,7 +129,7 @@ export default function DailyRecord() {
                 </div>
             )}
 
-            <div className="table-responsive r-24 border_2px mt-5 mb-5">
+            <div className="table-responsive r-24 border_2px my-5 ">
                 <table className="table table-bordered text-center align-middle">
                     <thead className="table-light">
                         <tr>
@@ -168,9 +168,12 @@ export default function DailyRecord() {
                                     </td>
                                     <td>公司外</td>
                                     <td>
-                                        {record.notes}{" "}
+                                        <div className="mb-1">
+                                            {record.notes}{" "}
+                                        </div>
                                         <button
-                                            className="underline border-0 p-2 ms-2"
+                                            className="bg-transparent  border-0 p-2 ms-2 "
+                                            style={{ fontSize: '12px' }}
                                             onClick={() => {
                                                 openNoteModal();
                                                 dispatch(
@@ -185,8 +188,7 @@ export default function DailyRecord() {
                                                 );
                                                 dispatch(setEditingRecord(record));
                                             }}
-                                        >
-                                            編輯
+                                        ><u>編輯備註</u>
                                         </button>
                                     </td>
                                 </tr>
@@ -195,6 +197,7 @@ export default function DailyRecord() {
                     </tbody>
                 </table>
             </div>
+
             <NoteModal closeNoteModal={closeNoteModal} />
         </section>
     );

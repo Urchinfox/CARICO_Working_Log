@@ -95,7 +95,7 @@ export default function AdminDashBoard() {
 
 
         <div className="container-fluid mt-5">
-            <div className="mb-3">
+            <div className="mb-3 px-3">
                 <Link
                     className={`btn btn-light r-99 border_2px py-2 px-3 ${dateTab === "/admin/monthly_record" ? "active" : ""
                         }`}
