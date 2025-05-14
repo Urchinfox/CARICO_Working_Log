@@ -1,6 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import supabase from "../supabase";
-// import { act } from "react";
 
 export const authSlice = createSlice({
     name: 'auth',
@@ -32,7 +31,6 @@ export const authSlice = createSlice({
 
 export const checkSession = createAsyncThunk('auth/checkSession', async (navigate) => {
     const { data: session } = await supabase.auth.getSession();
-    console.log(session.session);
     if (!session.session) {
         navigate('/')
     } else {
@@ -63,10 +61,8 @@ export const roleValidate = createAsyncThunk('auth/roleValidate', async () => {
 })
 
 export const handleLogout = createAsyncThunk('auth/logout', async (navigate) => {
-    console.log('dee')
     try {
         const res = await supabase.auth.signOut();
-        console.log(res, 'logout succeed');
         navigate('/');
 
     } catch (error) {

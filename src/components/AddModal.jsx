@@ -49,7 +49,6 @@ export default function AddModal({ closeModal, getUser }) {
                 ]);
 
             if (error) throw error;
-            console.log('succeed to insert user data', data);
             closeModal('add')
             getUser();
 
@@ -59,7 +58,6 @@ export default function AddModal({ closeModal, getUser }) {
     };
 
     const handleSubmit = async (data) => {
-        console.log(data);
         setSignUpForm(data);
 
         try {
@@ -92,11 +90,11 @@ export default function AddModal({ closeModal, getUser }) {
         </>)
     }
 
-    const CheckBox = ({ name, label, type, register, errors, rules, value }) => {
+    const CheckBox = ({ name, label, type, register, errors, rules, value, labelName }) => {
         return (<>
             <input className={`form-check-input ${errors?.[name] && 'is-invalid'}`} type={type} name={name} id={label} value={value} {...register(name, rules)} />
             <label className="form-check-label" htmlFor={label}>
-                {value}
+                {labelName}
             </label>
             {
                 errors?.[name] && (<div className="invalid-feedback">{errors?.[name].message}</div>)
@@ -115,7 +113,6 @@ export default function AddModal({ closeModal, getUser }) {
                         <button type="button" className="btn-close" onClick={() => closeModal('add')}></button>
                     </div>
                     <div className="modal-body">
-                        {JSON.stringify(signUpForm)}
                         <form onSubmit={addUserSubmit(handleSubmit)}>
                             <div className="mb-3">
                                 <Input label='staffName' name='name' type="text" placeholder='馮迪索' errors={errors} register={register} rules={{ required: { value: true, message: '請填寫員工姓名' } }} title='員工姓名' />
@@ -150,11 +147,11 @@ export default function AddModal({ closeModal, getUser }) {
 
                             </div>
                             <div className="form-check">
-                                <CheckBox label='role_admin' name='role' register={register} errors={errors} value='admin' type='radio' rules={{ required: true }} />
+                                <CheckBox label='role_admin' name='role' register={register} errors={errors} value='admin' type='radio' labelName='管理者' rules={{ required: true }} />
 
                             </div>
                             <div className="form-check">
-                                <CheckBox label='role_staff' name='role' register={register} errors={errors} value='staff' type='radio' rules={{ required: { value: true, message: '請選擇權限' } }} />
+                                <CheckBox label='role_staff' name='role' register={register} errors={errors} value='staff' type='radio' labelName='員工' rules={{ required: { value: true, message: '請選擇權限' } }} />
                             </div>
 
                             <div className="modal-footer">

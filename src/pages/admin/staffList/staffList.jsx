@@ -27,12 +27,10 @@ export default function StaffList({ close }) {
     // id permission effect
     useEffect(() => {
         if (loading) {
-            console.log('loading.....');
             return;
         }
 
         if (role === null) {
-            console.log('Role not fetched yet');
             return;
         }
 
@@ -74,6 +72,7 @@ export default function StaffList({ close }) {
 
             setUserData(data)
 
+
             if (error) {
                 throw error
             }
@@ -83,6 +82,8 @@ export default function StaffList({ close }) {
         }
     }
 
+
+
     //getuser effect
     useEffect(() => {
         getUser();
@@ -91,32 +92,45 @@ export default function StaffList({ close }) {
         <Navbar user={'admin'} />
         <DeleteModal closeModal={closeModal} userTempData={userTempData} getUser={getUser} />
         <AddModal closeModal={closeModal} getUser={getUser} />
-        <button type="button" className="btn btn-light r-16 border_2px" onClick={() => openModal('add')}>創建員工帳號</button>
+        <div className="container">
+            <div className="justify-content-between d-flex align-items-center">
+                <div>
+                    <button type="button" className="btn btn-light p-2 rounded-3" onClick={() => navigate('/admin/monthly_record')}>
+                        <i className="bi bi-box-arrow-left me-1"></i>返回
+                    </button>
+                </div>
+                <div>
+                    <button type="button" className="btn btn-light r-16 p-2 border_2px" onClick={() => openModal('add')}>創建員工帳號</button>
+                </div>
+            </div>
 
-        <table className="styled-table">
-            <thead>
-                <tr>
-                    <th>姓名</th>
-                    <th>帳號</th>
-                    <th>權限</th>
-                    <th>操作</th>
+            <table className="styled-table mt-3">
+                <thead>
+                    <tr>
+                        <th>姓名</th>
+                        <th>帳號</th>
+                        <th>權限</th>
+                        <th>操作</th>
 
-                </tr>
-            </thead>
-            <tbody>
-                {
-                    userData.map(item => {
-                        return (
-                            <tr key={item.id}>
-                                <td>{item.name}</td>
-                                <td>{item.email}</td>
-                                <td>{item.role}</td>
-                                <td><button type="button" disabled={item.name === 'Snan'} onClick={() => openModal('delete', item)}>刪除</button></td>
-                            </tr>
-                        )
-                    })
-                }
-            </tbody>
-        </table>
+                    </tr>
+                </thead>
+                <tbody>
+                    {
+                        userData.map(item => {
+                            return (
+                                <tr key={item.id}>
+                                    <td>{item.name}</td>
+                                    <td>{item.email}</td>
+                                    <td>{item.role}</td>
+                                    <td><button type="button" disabled={item.name === 'Snan'} onClick={() => openModal('delete', item)}>刪除</button></td>
+                                </tr>
+                            )
+                        })
+                    }
+                </tbody>
+            </table>
+
+        </div>
+
     </>)
 }

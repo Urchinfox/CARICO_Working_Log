@@ -1,10 +1,14 @@
+
 import { useSelector, useDispatch } from "react-redux";
-import { setSelectedMonth, setEditingNoteId, setNoteInput, setFilterStaff, setSelectedStaff, setSelectedStatus, setEditingRecord, setSelectedWeekday, setStatusCard } from "../../slices/recordsSlice";
+import { setSelectedMonth, setEditingNoteId, setNoteInput, setFilterStaff, setSelectedStaff, setSelectedStatus, setEditingRecord, setSelectedWeekday, setStatusCard, fetchAttendance } from "../../slices/recordsSlice";
 import { useEffect, useRef, useState, useMemo } from "react";
 import NoteModal from "../../components/NoteModal";
 import { Modal } from "bootstrap";
 import FilterStatusModal from "../../components/FilterStatusModal";
 import StatisticsCard from "./StatisticsCard";
+
+
+
 
 export default function MonthlyRecord() {
     const { monthlyRecords, selectedMonth, monthlyFilteredResult, monthlySelectedStaff, selectedStatus, selectedWeekday, loading, statusCard } = useSelector((state) => state.record);
@@ -106,7 +110,6 @@ export default function MonthlyRecord() {
             ).length,
         };
         dispatch(setStatusCard(stats));
-        console.log("Stats updated:", stats);
     }, [displayRecords]);
 
 
@@ -272,3 +275,5 @@ export default function MonthlyRecord() {
     </>);
 
 }
+
+

@@ -25,7 +25,6 @@ export default function DeleteModal({ closeModal, userTempData, getUser }) {
                 throw deleteUserError;
             }
 
-            console.log(`成功刪除 user_id: ${userTempData.user_id} 的 users 和 attendance 資料`);
 
             closeModal("delete");
             getUser();

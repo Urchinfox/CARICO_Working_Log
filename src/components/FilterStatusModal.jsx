@@ -1,11 +1,12 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux";
-import { setSelectedStatus, setSelectedWeekday } from "../slices/recordsSlice";
+import { setSelectedStatus, setSelectedWeekday, fetchStaffList } from "../slices/recordsSlice";
 
 export default function FilterStatusModal({ close, handleSelect }) {
     const [staffName, setStaffName] = useState('');
     const [status, setStatus] = useState('');
     const [weekday, setWeekday] = useState([]);
+    const { staffList } = useSelector(state => state.record)
 
     const dispatch = useDispatch();
     const filterSubmit = () => {
@@ -34,9 +35,14 @@ export default function FilterStatusModal({ close, handleSelect }) {
         setWeekday([]);
     };
 
+    useEffect(() => {
+        dispatch(fetchStaffList())
+    }, [])
+
 
     return (<>
         <div className="modal fade" id="filterModal">
+            {JSON.stringify(staffList)}
             <div className="modal-dialog modal-dialog-centered">
                 <div className="modal-content p-4 rounded-4">
                     <div className="modal-body">
@@ -124,9 +130,14 @@ export default function FilterStatusModal({ close, handleSelect }) {
                             <p className="mb-0 text-secondary mb-4">選擇員工 *選填*</p>
                             <select className="form-select custom-select py-3" value={staffName}
                                 onChange={(e) => setStaffName(e.target.value)}>
-                                <option value='default' disabled={staffName ? true : false} >選擇員工</option>
-                                <option value="許之瑜">許之瑜</option>
-                                <option value="黃偉宸">黃偉宸</option>
+                                <option value='default' disabled={!!staffName} >選擇員工</option>
+                                {
+                                    staffList.map((name, index) => {
+                                        return (
+                                            <option key={index} value={name}>{name}</option>
+                                        )
+                                    })
+                                }
                             </select>
                         </div>
 

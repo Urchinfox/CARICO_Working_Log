@@ -1,7 +1,14 @@
-import { useDispatch } from "react-redux"
-import { setSelectedStaff } from "../slices/recordsSlice";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux"
+import { fetchStaffList } from "../slices/recordsSlice";
+
 export default function FilterTime({ setStartDate, setEndDate, handleDateRangeSubmit, endDate, startDate, setSelectedName }) {
+    const { staffList } = useSelector(state => state.record)
     const dispatch = useDispatch();
+
+    useEffect(() => {
+        dispatch(fetchStaffList())
+    }, [])
     return (<>
         <div className="border-primary summary-box r-24 bg-white">
             <h5 className="mb-3 text-primary">區間設定</h5>
@@ -34,8 +41,14 @@ export default function FilterTime({ setStartDate, setEndDate, handleDateRangeSu
                         <div className="mt-2">
                             <select className="form-select form-select-sm w-100  py-2" onChange={(e) => setSelectedName(e.target.value)}>
                                 <option value='all'>全部員工</option>
-                                <option value="黃偉宸">黃偉宸</option>
-                                <option value="許之瑜">許之瑜</option>
+                                {
+                                    staffList.map(name => {
+                                        return (
+                                            <option key={name} value={name}>{name}</option>
+                                        )
+                                    })
+                                }
+
                             </select>
                         </div>
                         <div className="text-end mt-2">

@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import Navbar from "../../components/header/header"
 import { useSelector, useDispatch } from "react-redux"
 import { checkSession, roleValidate } from "../../slices/authSlice";
@@ -6,7 +6,8 @@ import { useLocation, useNavigate } from "react-router-dom";
 import supabase from "../../supabase";
 import { Link } from "react-router-dom";
 import { Outlet } from "react-router-dom";
-import { fetchAttendance, setSelectedMonth } from "../../slices/recordsSlice";
+import { fetchAttendance, setSelectedMonth, setDateRange } from "../../slices/recordsSlice";
+
 
 
 export default function AdminDashBoard() {
@@ -14,11 +15,8 @@ export default function AdminDashBoard() {
     const dispatch = useDispatch();
     const { role, loading } = useSelector((state) => state.auth)
     const [userData, setUserData] = useState([]);
-    const [userTempData, setUserTempData] = useState({});
     const pathName = useLocation();
     const [dateTab, setDateTab] = useState('/admin/daily_record');
-
-
 
 
     useEffect(() => {
@@ -36,12 +34,10 @@ export default function AdminDashBoard() {
     // id permission effect
     useEffect(() => {
         if (loading) {
-            console.log('loading.....');
             return;
         }
 
         if (role === null) {
-            console.log('Role not fetched yet');
             return;
         }
 

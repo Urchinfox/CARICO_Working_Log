@@ -51,12 +51,10 @@ export default function CheckIn() {
 
     useEffect(() => {
         if (loading) {
-            console.log('loading.....');
             return;
         }
 
         if (role === null) {
-            console.log('Role not fetched yet');
             return;
         }
 
