@@ -70,7 +70,8 @@ export default function Login() {
         setResetError("");
         try {
             // const redirectTo = `${window.location.origin}/reset-password`;
-            const redirectTo = `${window.location.origin}/#/reset-password`;
+            // const redirectTo = `${window.location.origin}/#/reset-password`;
+            const redirectTo = `${window.location.origin}/CARICO_Working_Log/#/reset-password`;
             console.log('Sending reset email with redirectTo:', redirectTo);
             const { error } = await supabase.auth.resetPasswordForEmail(resetEmail, {
                 redirectTo,
