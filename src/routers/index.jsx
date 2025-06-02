@@ -5,6 +5,8 @@ import AdminDashBoard from '../pages/admin/admin';
 import DailyRecord from '../pages/admin/DailyRecord';
 import MonthlyRecord from '../pages/admin/MonthlyRecord';
 import StaffList from '../pages/admin/staffList/staffList';
+import ResetPassword from '../pages/login/resetPassword';
+
 const routers = createHashRouter([
     {
         path: '/',
@@ -32,7 +34,12 @@ const routers = createHashRouter([
     {
         path: 'staff_list',
         element: <StaffList />
-    }
+    },
+    {
+        path: 'reset-password',
+        element: <ResetPassword />
+    },
+
 
 ])
 

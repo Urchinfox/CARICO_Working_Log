@@ -8,7 +8,7 @@ function App() {
 
   return (
     <>
-      <RouterProvider router={routers}></RouterProvider>
+      <RouterProvider router={routers} basename="/CARICO_Working_Log" ></RouterProvider>
     </>
   )
 }

@@ -7,14 +7,17 @@ import { useNavigate } from "react-router-dom";
 export default function Login() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [errorMsg, setErrorMsg] = useState(""); // 新增錯誤訊息狀態
+    const [errorMsg, setErrorMsg] = useState("");
+    const [resetEmail, setResetEmail] = useState(""); // 新增重設密碼的 email
+    const [resetMessage, setResetMessage] = useState(""); // 重設成功訊息
+    const [resetError, setResetError] = useState(""); // 重設錯誤訊息
     const navigate = useNavigate();
 
     const submitLogin = async (e) => {
         e.preventDefault();
-        setErrorMsg(""); // 重置錯誤訊息
+        setErrorMsg("");
         try {
-            // 認證
+            // validate
             const { data, error } = await supabase.auth.signInWithPassword({
                 email,
                 password,
@@ -33,7 +36,7 @@ export default function Login() {
                 return;
             }
 
-            // 查詢用戶角色
+            // look into current user
             const { data: userRoleData, error: roleError } = await supabase
                 .from("users")
                 .select("role")
@@ -48,7 +51,7 @@ export default function Login() {
 
             const userRole = userRoleData?.role || "user"; // 預設普通用戶
 
-            // 根據角色導航
+            // role page
             if (userRole === "admin") {
                 navigate("/admin/monthly_record");
             } else {
@@ -57,6 +60,25 @@ export default function Login() {
         } catch (error) {
             console.error("登入失敗:", error.message);
             setErrorMsg("登入失敗，請稍後再試或聯絡管理員");
+        }
+    };
+
+
+    const handleResetPassword = async (e) => {
+        e.preventDefault();
+        setResetMessage("");
+        setResetError("");
+        try {
+            // const redirectTo = `${window.location.origin}/reset-password`;
+            const redirectTo = `${window.location.origin}/#/reset-password`;
+            console.log('Sending reset email with redirectTo:', redirectTo);
+            const { error } = await supabase.auth.resetPasswordForEmail(resetEmail, {
+                redirectTo,
+            });
+            if (error) throw error;
+            setResetMessage("已發送重設密碼連結，請檢查您的電子郵件！");
+        } catch (err) {
+            setResetError("發送失敗：" + err.message);
         }
     };
 
@@ -104,10 +126,44 @@ export default function Login() {
                                             />
                                         </div>
                                     </div>
-                                    <button type="submit" className="btn btn-primary mt-4">
-                                        登入
+                                    <div className="mb-3">
+                                        <button type="submit" className="btn btn-primary mt-4">
+                                            登入
+                                        </button>
+                                    </div>
+                                    {/* <button type="button" className="rounded-1"><Link to='/reset-password'>忘記密碼</Link></button> */}
+                                </form>
+
+
+                                {/* 忘記密碼表單 */}
+                                <form onSubmit={handleResetPassword} className="p-3">
+                                    <div className="mb-3 text-start fw-lighter">
+                                        <label htmlFor="resetEmail" className="form-label text-white">
+                                            忘記密碼？輸入電子郵件
+                                        </label>
+                                        <input
+                                            type="email"
+                                            className="form-control"
+                                            id="resetEmail"
+                                            placeholder="輸入您的電子郵件"
+                                            value={resetEmail}
+                                            onChange={(e) => setResetEmail(e.target.value)}
+                                        />
+                                    </div>
+                                    <button type="submit" className="btn btn-light btn-sm">
+                                        發送重設連結
                                     </button>
                                 </form>
+                                {resetMessage && (
+                                    <div className="alert alert-success mt-3" role="alert">
+                                        {resetMessage}
+                                    </div>
+                                )}
+                                {resetError && (
+                                    <div className="alert alert-danger mt-3" role="alert">
+                                        {resetError}
+                                    </div>
+                                )}
                             </div>
                         </div>
                     </div>
@@ -117,110 +173,3 @@ export default function Login() {
     );
 }
 
-// import Logo from '../../assets/logo.png'
-// import { useState } from "react"
-// import supabase from "../../supabase";
-// import { useNavigate } from "react-router-dom";
-
-
-// export default function Login() {
-//     const [loginForm, setLoginForm] = useState();
-//     const [email, setEmail] = useState('');
-//     const [password, setPassword] = useState('');
-//     const navigate = useNavigate();
-
-//     const submitLogin = async (e) => {
-//         e.preventDefault();
-//         try {
-//             const { data, error } = await supabase.auth.signInWithPassword({
-//                 email,
-//                 password,
-//             });
-//             if (error) {
-//                 console.log('登入錯誤:', error.message);
-//                 alert('帳號或密碼錯誤 請聯絡Daniel')
-//                 return;
-//             }
-
-//             // get user information
-//             const { data: userData, error: userError } = await supabase.auth.getUser();
-//             if (userError) {
-//                 console.log('failed to get user info:', userError.message);
-//                 return;
-//             }
-
-
-//             // role validate
-//             const { data: userRoleData, error: roleError } = await supabase
-//                 .from('users')
-//                 .select('role')
-//                 .eq('user_id', userData.user.id)
-//                 .single(); // withdraw 1 data only
-
-//             if (roleError) {
-//                 console.log('role error:', roleError.message);
-//                 return;
-//             }
-
-//             const userRole = userRoleData?.role || 'user'; //default general user
-
-//             // admin page or staff page
-//             if (userRole === 'admin') {
-//                 // direct to admin page
-//                 navigate('/admin/monthly_record')
-
-//             } else {
-//                 // direct to staff page
-//                 navigate('/checkin')
-
-//             }
-
-//         } catch (error) {
-//             console.log('failure', error)
-//         }
-
-//     };
-
-//     return (<>
-//         <section className="mt-100">
-//             <div className="container">
-//                 <div className="row justify-content-center">
-//                     <div className="col-lg-4">
-//                         <div className="login_card text-center py-5">
-//                             <img className="mx-auto" src={Logo} width="150" />
-//                             <p className="fs-5 text-white mt-4">登入</p>
-//                             <form onSubmit={submitLogin}>
-//                                 <div className="login_input mx-auto">
-//                                     <div className="mb-3 text-start fw-lighter">
-//                                         <label htmlFor="staffNum" className="form-label text-white">員工帳號</label>
-//                                         <input
-//                                             type="email"
-//                                             name="staffNum"
-//                                             className="form-control"
-//                                             id="staffNum"
-//                                             placeholder="040"
-//                                             onChange={(e) => setEmail(e.target.value)}
-//                                         />
-//                                     </div>
-//                                     <div className="mb-3 text-start fw-lighter">
-//                                         <label htmlFor="password" className="form-label text-white">密碼</label>
-//                                         <input
-//                                             type="password"
-//                                             className="form-control"
-//                                             id="password"
-//                                             placeholder="請輸入密碼"
-//                                             onChange={(e) => setPassword(e.target.value)}
-//                                         />
-//                                     </div>
-//                                 </div>
-//                                 <button type="submit" className="btn btn-primary mt-4">登入</button>
-//                             </form>
-
-//                         </div>
-
-//                     </div>
-//                 </div>
-//             </div>
-//         </section>
-//     </>)
-// }
