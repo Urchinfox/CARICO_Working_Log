@@ -11,6 +11,7 @@ export default function Login() {
     const [resetEmail, setResetEmail] = useState(""); // 新增重設密碼的 email
     const [resetMessage, setResetMessage] = useState(""); // 重設成功訊息
     const [resetError, setResetError] = useState(""); // 重設錯誤訊息
+    const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
     const submitLogin = async (e) => {
@@ -69,17 +70,33 @@ export default function Login() {
         setResetMessage("");
         setResetError("");
         try {
-            // const redirectTo = `${window.location.origin}/reset-password`;
-            // const redirectTo = `${window.location.origin}/#/reset-password`;
-            const redirectTo = `${window.location.origin}/CARICO_Working_Log/#/reset-password`;
-            console.log('Sending reset email with redirectTo:', redirectTo);
+            setLoading(true);
+            // email is valid?
+            const { data: user, error: userError } = await supabase
+                .from('users')
+                .select('email')
+                .eq('email', resetEmail)
+                .maybeSingle();
+            if (userError) {
+                throw new Error(`查詢失敗：${userError.message}`);
+            }
+            if (!user) {
+                setLoading(false);
+                throw new Error('此 Email 不存在，請聯繫管理員！');
+            }
+
+            // const redirectTo = `${window.location.origin}/#/reset-password`; //本地端測試
+            const redirectTo = `${window.location.origin}/CARICO_Working_Log/#/reset-password`; //正式機
+
             const { error } = await supabase.auth.resetPasswordForEmail(resetEmail, {
                 redirectTo,
             });
             if (error) throw error;
             setResetMessage("已發送重設密碼連結，請檢查您的電子郵件！");
+            setLoading(false);
         } catch (err) {
             setResetError("發送失敗：" + err.message);
+            setLoading(false);
         }
     };
 
@@ -153,6 +170,12 @@ export default function Login() {
                                     </div>
                                     <button type="submit" className="btn btn-light btn-sm">
                                         發送重設連結
+                                        {
+                                            loading ? <div className="spinner-border spinner-border-sm text-primary" role="status">
+                                                <span className="visually-hidden">Loading...</span>
+                                            </div> : ''
+                                        }
+
                                     </button>
                                 </form>
                                 {resetMessage && (

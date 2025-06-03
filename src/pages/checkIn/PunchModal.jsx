@@ -4,7 +4,7 @@ import { formatPunchTime } from "./formatTime";
 
 export default function PunchModal({ closePunchModal, punchInOutModalRef }) {
     const dispatch = useDispatch();
-    const { modalType, punchTime } = useSelector(state => state.punch);
+    const { modalType, punchTime, isLoading } = useSelector(state => state.punch);
 
     return (
         <div className="modal fade" ref={punchInOutModalRef}>
@@ -23,6 +23,7 @@ export default function PunchModal({ closePunchModal, punchInOutModalRef }) {
                             type="button"
                             className="btn btn-primary"
                             onClick={() => dispatch(handlePunch(modalType === 'punchin' ? 'in' : 'out'))}
+                            disabled={isLoading}
                         >
                             確定打卡
                         </button>
