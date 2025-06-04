@@ -125,7 +125,7 @@ export default function Login() {
                                                 name="staffNum"
                                                 className="form-control"
                                                 id="staffNum"
-                                                placeholder="040"
+                                                placeholder="example@gmail.com"
                                                 value={email}
                                                 onChange={(e) => setEmail(e.target.value)}
                                             />

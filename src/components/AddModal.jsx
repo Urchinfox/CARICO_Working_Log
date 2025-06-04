@@ -119,7 +119,7 @@ export default function AddModal({ closeModal, getUser }) {
 
                             </div>
                             <div className="mb-3">
-                                <Input label='staffEmail' name='email' type="email" placeholder='example.com' errors={errors} register={register} rules={{
+                                <Input label='staffEmail' name='email' type="email" placeholder='example@gmail.com' errors={errors} register={register} rules={{
                                     required: {
                                         value: true,
                                         message: 'Email必填唷',
@@ -146,12 +146,15 @@ export default function AddModal({ closeModal, getUser }) {
 
 
                             </div>
-                            <div className="form-check">
-                                <CheckBox label='role_admin' name='role' register={register} errors={errors} value='admin' type='radio' labelName='管理者' rules={{ required: true }} />
+                            <div className="d-flex mb-3">
+                                <div className="form-check me-3">
+                                    <CheckBox label='role_admin' name='role' register={register} errors={errors} value='admin' type='radio' labelName='管理者' rules={{ required: true }} />
 
-                            </div>
-                            <div className="form-check">
-                                <CheckBox label='role_staff' name='role' register={register} errors={errors} value='staff' type='radio' labelName='員工' rules={{ required: { value: true, message: '請選擇權限' } }} />
+                                </div>
+                                <div className="form-check">
+                                    <CheckBox label='role_staff' name='role' register={register} errors={errors} value='staff' type='radio' labelName='員工' rules={{ required: { value: true, message: '請選擇權限' } }} />
+                                </div>
+
                             </div>
 
                             <div className="modal-footer">
